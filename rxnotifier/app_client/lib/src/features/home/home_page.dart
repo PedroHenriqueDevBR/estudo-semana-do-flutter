@@ -29,57 +29,83 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(16),
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 100,
-              height: 100,
-              child: CircleAvatar(
-                backgroundImage: AssetImage(imageReference.dog),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(16),
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 100,
+                height: 100,
+                child: CircleAvatar(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundImage: AssetImage(imageReference.dog),
+                ),
               ),
-            ),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: 'Ana Carolina',
-                      labelText: 'Seu nome',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Campo obrigatório';
-                      }
-                    },
-                    onChanged: (nameValue) => chatData.name = nameValue,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: 'Flutter',
-                      labelText: 'Sala',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Campo obrigatório';
-                      }
-                    },
-                    onChanged: (roomValue) => chatData.room = roomValue,
-                  ),
-                  SizedBox(height: 16),
-                  ElevatedButton(
-                    child: Text('Entrar na sala'),
-                    onPressed: validateForm,
-                  ),
-                ],
+              SizedBox(height: 16.0),
+              Text(
+                'Caramelo Chat',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.yellowAccent.shade700,
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: 24.0),
+              Divider(),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'Fulano',
+                        labelText: 'Diga seu nome ao Caramelo',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obrigatório';
+                        }
+                      },
+                      onChanged: (nameValue) => chatData.name = nameValue,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'Flutter',
+                        labelText: 'Nome da casinha',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obrigatório';
+                        }
+                      },
+                      onChanged: (roomValue) => chatData.room = roomValue,
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              visualDensity: VisualDensity.standard,
+                            ),
+                            child: Text(
+                              'Entrar na sala',
+                              style: TextStyle(color: Theme.of(context).backgroundColor),
+                            ),
+                            onPressed: validateForm,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
