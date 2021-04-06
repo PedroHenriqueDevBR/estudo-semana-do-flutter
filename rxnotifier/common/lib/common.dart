@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+const API_URL = 'http://dart-socket-pedro.herokuapp.com/';
+
 class SocketEvent {
   final String name;
   final String room;
