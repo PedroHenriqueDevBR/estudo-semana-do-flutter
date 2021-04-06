@@ -7,11 +7,70 @@ import 'package:common/common.dart';
 class ChatController {
   late Socket socket;
   late ChatData chatData;
+  late ScrollController scrollController;
   RxList<SocketEvent> listEvents = RxList<SocketEvent>([]);
   TextEditingController messageController = TextEditingController(text: '');
+  FocusNode inputMessageFocus = FocusNode();
 
   ChatController({required this.chatData}) {
-    _init();
+    _initFakeData();
+    scrollController = ScrollController();
+  }
+
+  void _initFakeData() {
+    SocketEvent event = SocketEvent(
+      name: 'Pedro',
+      room: 'teste',
+      text: 'Olá mundo, mensagem de Pedro!',
+      type: SocketEventType.message,
+    );
+    SocketEvent event2 = SocketEvent(
+      name: 'Henrique',
+      room: 'teste',
+      text: 'Olá mundo, mensagem de Henrique!',
+      type: SocketEventType.message,
+    );
+    SocketEvent enterRoomEvent = SocketEvent(
+      name: 'Henrique',
+      room: 'teste',
+      text: '',
+      type: SocketEventType.enter_room,
+    );
+    SocketEvent leaveRoomEvent = SocketEvent(
+      name: 'Henrique',
+      room: 'teste',
+      text: '',
+      type: SocketEventType.leave_room,
+    );
+    listEvents.add(enterRoomEvent);
+    listEvents.add(event);
+    listEvents.add(event2);
+    listEvents.add(event);
+    listEvents.add(event2);
+    listEvents.add(event);
+    listEvents.add(event2);
+    listEvents.add(event);
+    listEvents.add(event2);
+    listEvents.add(event);
+    listEvents.add(event2);
+    listEvents.add(event);
+    listEvents.add(event2);
+    listEvents.add(event);
+    listEvents.add(event2);
+    listEvents.add(event);
+    listEvents.add(event2);
+    listEvents.add(event);
+    listEvents.add(event2);
+    listEvents.add(event);
+    listEvents.add(event2);
+    listEvents.add(event);
+    listEvents.add(event2);
+    listEvents.add(event);
+    listEvents.add(event2);
+    listEvents.add(leaveRoomEvent);
+    listEvents.add(event);
+    listEvents.add(event);
+    listEvents.add(event);
   }
 
   void _init() {
@@ -35,15 +94,21 @@ class ChatController {
   }
 
   void send() {
-    SocketEvent event = SocketEvent(
-      name: chatData.name,
-      room: chatData.room,
-      text: messageController.text,
-      type: SocketEventType.message,
-    );
-    listEvents.add(event);
-    socket.emit('message', event.toJson());
+    // SocketEvent event = SocketEvent(
+    //   name: chatData.name,
+    //   room: chatData.room,
+    //   text: messageController.text,
+    //   type: SocketEventType.message,
+    // );
+    // listEvents.add(event);
+    // socket.emit('message', event.toJson());
     messageController.clear();
+    inputMessageFocus.requestFocus();
+    scrollController.animateTo(
+      scrollController.position.maxScrollExtent,
+      duration: Duration(seconds: 2),
+      curve: Curves.linearToEaseOut,
+    );
   }
 
   void dispose() {
