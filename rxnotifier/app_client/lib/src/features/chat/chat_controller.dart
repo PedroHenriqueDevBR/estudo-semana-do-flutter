@@ -13,7 +13,7 @@ class ChatController {
   FocusNode inputMessageFocus = FocusNode();
 
   ChatController({required this.chatData}) {
-    _initFakeData();
+    _init();
     scrollController = ScrollController();
   }
 
@@ -45,37 +45,13 @@ class ChatController {
     listEvents.add(enterRoomEvent);
     listEvents.add(event);
     listEvents.add(event2);
-    listEvents.add(event);
-    listEvents.add(event2);
-    listEvents.add(event);
-    listEvents.add(event2);
-    listEvents.add(event);
-    listEvents.add(event2);
-    listEvents.add(event);
-    listEvents.add(event2);
-    listEvents.add(event);
-    listEvents.add(event2);
-    listEvents.add(event);
-    listEvents.add(event2);
-    listEvents.add(event);
-    listEvents.add(event2);
-    listEvents.add(event);
-    listEvents.add(event2);
-    listEvents.add(event);
-    listEvents.add(event2);
-    listEvents.add(event);
-    listEvents.add(event2);
-    listEvents.add(event);
-    listEvents.add(event2);
     listEvents.add(leaveRoomEvent);
-    listEvents.add(event);
-    listEvents.add(event);
     listEvents.add(event);
   }
 
   void _init() {
     socket = io(
-      'https://dart-socket.herokuapp.com/',
+      'https://dart-socket-pedro.herokuapp.com/',
       OptionBuilder().setTransports(['websocket']).build(),
     );
     socket.connect();
@@ -94,14 +70,14 @@ class ChatController {
   }
 
   void send() {
-    // SocketEvent event = SocketEvent(
-    //   name: chatData.name,
-    //   room: chatData.room,
-    //   text: messageController.text,
-    //   type: SocketEventType.message,
-    // );
-    // listEvents.add(event);
-    // socket.emit('message', event.toJson());
+    SocketEvent event = SocketEvent(
+      name: chatData.name,
+      room: chatData.room,
+      text: messageController.text,
+      type: SocketEventType.message,
+    );
+    listEvents.add(event);
+    socket.emit('message', event.toJson());
     messageController.clear();
     inputMessageFocus.requestFocus();
     scrollController.animateTo(

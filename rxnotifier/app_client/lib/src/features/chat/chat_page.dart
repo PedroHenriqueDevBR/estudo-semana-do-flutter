@@ -59,35 +59,39 @@ class _ChatPageState extends State<ChatPage> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Expanded(
-              child: RxBuilder(
-                builder: (context) {
-                  return ListView.builder(
-                    controller: _controller.scrollController,
-                    physics: BouncingScrollPhysics(),
-                    itemCount: _controller.listEvents.length,
-                    itemBuilder: (_, index) {
-                      final event = _controller.listEvents[index];
-
-                      if (event.type == SocketEventType.enter_room) {
-                        return userInTheRoomActioWidget(event: event);
-                      } else if (event.type == SocketEventType.leave_room) {
-                        return userInTheRoomActioWidget(event: event);
-                      } else {
-                        if (event.name == _controller.chatData.name) {
-                          return messageSentWidget(event);
-                        } else {
-                          return messageReceivedWidget(event);
-                        }
-                      }
-                    },
-                  );
-                },
-              ),
+              child: messagesContainer(),
             ),
             inputMessage(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget messagesContainer() {
+    return RxBuilder(
+      builder: (context) {
+        return ListView.builder(
+          controller: _controller.scrollController,
+          physics: BouncingScrollPhysics(),
+          itemCount: _controller.listEvents.length,
+          itemBuilder: (_, index) {
+            final event = _controller.listEvents[index];
+
+            if (event.type == SocketEventType.enter_room) {
+              return userInTheRoomActioWidget(event: event);
+            } else if (event.type == SocketEventType.leave_room) {
+              return userInTheRoomActioWidget(event: event);
+            } else {
+              if (event.name == _controller.chatData.name) {
+                return messageSentWidget(event);
+              } else {
+                return messageReceivedWidget(event);
+              }
+            }
+          },
+        );
+      },
     );
   }
 
@@ -112,8 +116,8 @@ class _ChatPageState extends State<ChatPage> {
     required SocketEvent event,
     required Color backgrouColor,
     required Color borderColor,
-    double marginLeft = null ?? 4.0,
-    double marginRight = null ?? 4.0,
+    double marginLeft = null ?? 8.0,
+    double marginRight = null ?? 8.0,
     bool disableRadiusTopLeft = null ?? false,
     bool disableRadiusTopRight = null ?? false,
   }) {
@@ -150,8 +154,8 @@ class _ChatPageState extends State<ChatPage> {
       event: event,
       backgrouColor: Colors.blueGrey.shade900,
       borderColor: Colors.blueGrey.shade800,
-      disableRadiusTopLeft: true,
-      marginRight: 24.0,
+      disableRadiusTopRight: true,
+      marginLeft: 24.0,
     );
   }
 
@@ -160,8 +164,8 @@ class _ChatPageState extends State<ChatPage> {
       event: event,
       backgrouColor: Theme.of(context).accentColor,
       borderColor: Theme.of(context).accentColor,
-      disableRadiusTopRight: true,
-      marginLeft: 24.0,
+      disableRadiusTopLeft: true,
+      marginRight: 24.0,
     );
   }
 
