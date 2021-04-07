@@ -13,7 +13,7 @@ class _HomePageState extends State<HomePage> {
   ChatData chatData = ChatData(name: '', room: '');
 
   void validateForm() {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState.validate()) {
       goToChatPage();
     }
   }
@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.yellowAccent.shade700,
+                  color: Colors.orange,
                 ),
               ),
               SizedBox(height: 24.0),

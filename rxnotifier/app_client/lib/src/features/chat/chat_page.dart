@@ -9,8 +9,8 @@ class ChatPage extends StatefulWidget {
   final ChatData chatData;
 
   const ChatPage({
-    Key? key,
-    required this.chatData,
+    Key key,
+    this.chatData,
   }) : super(key: key);
 
   @override
@@ -18,7 +18,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  late ChatController _controller;
+  ChatController _controller;
 
   void goToHomePage() {
     Navigator.pop(context);
@@ -28,6 +28,7 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     _controller = ChatController(chatData: widget.chatData);
+    _controller.init();
   }
 
   @override
@@ -69,14 +70,15 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget messagesContainer() {
-    return RxBuilder(
-      builder: (context) {
+    return ValueListenableBuilder(
+      valueListenable: _controller.listEvents,
+      builder: (_, __, ___) {
         return ListView.builder(
           controller: _controller.scrollController,
           physics: BouncingScrollPhysics(),
-          itemCount: _controller.listEvents.length,
+          itemCount: _controller.listEvents.value.length,
           itemBuilder: (_, index) {
-            final event = _controller.listEvents[index];
+            final event = _controller.listEvents.value[index];
 
             if (event.type == SocketEventType.enter_room) {
               return userInTheRoomActioWidget(event: event);
@@ -95,7 +97,7 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget userInTheRoomActioWidget({required SocketEvent event}) {
+  Widget userInTheRoomActioWidget({SocketEvent event}) {
     return Column(
       children: [
         ListTile(
@@ -113,9 +115,9 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget messageWidget({
-    required SocketEvent event,
-    required Color backgrouColor,
-    required Color borderColor,
+    SocketEvent event,
+    Color backgrouColor,
+    Color borderColor,
     double marginLeft = null ?? 8.0,
     double marginRight = null ?? 8.0,
     bool disableRadiusTopLeft = null ?? false,
@@ -143,7 +145,9 @@ class _ChatPageState extends State<ChatPage> {
       ),
       child: ListTile(
         dense: true,
-        title: Text(event.text),
+        title: Text(
+          event.text,
+        ),
         subtitle: Text('${event.name}'),
       ),
     );

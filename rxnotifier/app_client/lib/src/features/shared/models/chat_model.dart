@@ -3,8 +3,8 @@ class ChatData {
   String room;
 
   ChatData({
-    required this.name,
-    required this.room,
+    this.name,
+    this.room,
   });
 
   Map<String, dynamic> toMap() {

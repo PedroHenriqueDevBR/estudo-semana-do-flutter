@@ -1,28 +1,26 @@
 import 'package:app_client/src/features/shared/models/chat_model.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:rx_notifier/rx_notifier.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:common/common.dart';
 
 class ChatController {
-  late Socket socket;
-  late ChatData chatData;
-  late ScrollController scrollController;
-  RxList<SocketEvent> listEvents = RxList<SocketEvent>([]);
+  Socket socket;
+  ChatData chatData;
+  ScrollController scrollController;
+  ValueNotifier<List<SocketEvent>> listEvents = ValueNotifier<List<SocketEvent>>([]);
   TextEditingController messageController = TextEditingController(text: '');
   FocusNode inputMessageFocus = FocusNode();
-  String testApiURL = 'http://localhost:3100';
+  String testApiURL = 'http://192.168.2.3:3000';
   String productionApiURL = 'https://dart-socket-pedro.herokuapp.com/';
 
-  ChatController({required this.chatData}) {
-    _init();
+  ChatController({this.chatData}) {
     scrollController = ScrollController();
   }
 
-  void _init() {
+  void init() {
     socket = io(
       productionApiURL,
-      OptionBuilder().setTransports(['websocket']).build(),
+      OptionBuilder().setTransports(['websocket']).disableAutoConnect().build(),
     );
     socket.connect();
 
@@ -35,7 +33,8 @@ class ChatController {
 
     socket.on('message', (data) {
       SocketEvent event = SocketEvent.fromJson(data);
-      listEvents.add(event);
+      listEvents.value.add(event);
+      listEvents.notifyListeners();
     });
   }
 
@@ -46,10 +45,23 @@ class ChatController {
       text: messageController.text,
       type: SocketEventType.message,
     );
-    listEvents.add(event);
     socket.emit('message', event.toJson());
+    addMessageToList(event);
+    setValuesToDefault();
+  }
+
+  void setValuesToDefault() {
+    goToEndPage();
     messageController.clear();
     inputMessageFocus.requestFocus();
+  }
+
+  void addMessageToList(SocketEvent event) {
+    listEvents.value.add(event);
+    listEvents.notifyListeners();
+  }
+
+  void goToEndPage() {
     scrollController.animateTo(
       scrollController.position.maxScrollExtent,
       duration: Duration(seconds: 2),

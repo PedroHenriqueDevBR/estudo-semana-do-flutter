@@ -3,45 +3,45 @@ import 'dart:io';
 import 'package:socket_io/socket_io.dart';
 import 'package:common/common.dart';
 
-void main(List<String> arguments) {
+void main() {
   final Server server = Server();
 
-  server.on('connection', (client) {
-    onConnection(client);
-  });
+  server.on('connection', (socket) {
+    socket.on('enter_room', (data) {
+      final name = data['name'];
+      final room = data['room'];
 
-  server.listen(Platform.environment['PORT'] ?? 3000);
-}
+      print(data);
 
-void onConnection(Socket socket) {
-  socket.on('enter_room', (data) {
-    final name = data['name'];
-    final room = data['room'];
+      socket.join(room);
 
-    socket.join(room);
-
-    socket.to(room).broadcast.emit(
-        'message',
-        SocketEvent(
-          name: name,
-          room: room,
-          text: '',
-          type: SocketEventType.enter_room,
-        ).toJson());
-
-    socket.on('disconnect', (data) {
       socket.to(room).broadcast.emit(
           'message',
           SocketEvent(
             name: name,
             room: room,
             text: '',
-            type: SocketEventType.leave_room,
+            type: SocketEventType.enter_room,
           ).toJson());
-    });
 
-    socket.on('message', (json) {
-      socket.to(room).broadcast.emit(json);
+      socket.on('disconnect', (json) {
+        socket.to(room).broadcast.emit(
+            'message',
+            SocketEvent(
+              name: name,
+              room: room,
+              text: '',
+              type: SocketEventType.leave_room,
+            ).toJson());
+      });
+
+      socket.on('message', (json) {
+        final data = SocketEvent.fromJson(json);
+        final room = data.room;
+        socket.to(room).broadcast.emit('message', data);
+      });
     });
   });
+
+  server.listen(Platform.environment['PORT'] ?? 3000);
 }
