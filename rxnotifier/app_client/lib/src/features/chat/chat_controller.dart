@@ -11,47 +11,17 @@ class ChatController {
   RxList<SocketEvent> listEvents = RxList<SocketEvent>([]);
   TextEditingController messageController = TextEditingController(text: '');
   FocusNode inputMessageFocus = FocusNode();
+  String testApiURL = 'http://localhost:3100';
+  String productionApiURL = 'https://dart-socket-pedro.herokuapp.com/';
 
   ChatController({required this.chatData}) {
     _init();
     scrollController = ScrollController();
   }
 
-  void _initFakeData() {
-    SocketEvent event = SocketEvent(
-      name: 'Pedro',
-      room: 'teste',
-      text: 'Olá mundo, mensagem de Pedro!',
-      type: SocketEventType.message,
-    );
-    SocketEvent event2 = SocketEvent(
-      name: 'Henrique',
-      room: 'teste',
-      text: 'Olá mundo, mensagem de Henrique!',
-      type: SocketEventType.message,
-    );
-    SocketEvent enterRoomEvent = SocketEvent(
-      name: 'Henrique',
-      room: 'teste',
-      text: '',
-      type: SocketEventType.enter_room,
-    );
-    SocketEvent leaveRoomEvent = SocketEvent(
-      name: 'Henrique',
-      room: 'teste',
-      text: '',
-      type: SocketEventType.leave_room,
-    );
-    listEvents.add(enterRoomEvent);
-    listEvents.add(event);
-    listEvents.add(event2);
-    listEvents.add(leaveRoomEvent);
-    listEvents.add(event);
-  }
-
   void _init() {
     socket = io(
-      'https://dart-socket-pedro.herokuapp.com/',
+      productionApiURL,
       OptionBuilder().setTransports(['websocket']).build(),
     );
     socket.connect();
