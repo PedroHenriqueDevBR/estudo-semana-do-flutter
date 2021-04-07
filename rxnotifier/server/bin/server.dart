@@ -21,29 +21,27 @@ void onConnection(Socket socket) {
     socket.join(room);
 
     socket.to(room).broadcast.emit(
-          'message',
-          SocketEvent(
-            name: name,
-            room: room,
-            text: '',
-            type: SocketEventType.enter_room,
-          ).toJson(),
-        );
+        'message',
+        SocketEvent(
+          name: name,
+          room: room,
+          text: '',
+          type: SocketEventType.enter_room,
+        ).toJson());
 
-    socket.to(room).broadcast.emit(
+    socket.on('disconnect', (data) {
+      socket.to(room).broadcast.emit(
           'message',
           SocketEvent(
             name: name,
             room: room,
             text: '',
             type: SocketEventType.leave_room,
-          ).toJson(),
-        );
+          ).toJson());
+    });
 
     socket.on('message', (json) {
-      socket.to(room).broadcast.emit('message', json);
+      socket.to(room).broadcast.emit(json);
     });
   });
-
-  socket.on('disconected', (data) {});
 }
